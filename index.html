@@ -1,0 +1,387 @@
+<!--
+  ════════════════════════════════════════════════════════════════
+  LAB RETREAT — single-page static site
+  ────────────────────────────────────────────────────────────────
+  HOW TO EDIT:
+  All content is plain text inside the <body>. Search for the word
+  "EDIT" to jump between the spots most likely to need changing
+  (lab name, dates, location, schedule rows, speakers, logistics).
+  Sample content below is a placeholder — replace with your own.
+  No build step: just open this file or drop it on any static host.
+  ════════════════════════════════════════════════════════════════
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voss Lab — Annual Retreat 2026</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --paper:#F4F1EA;
+    --paper-2:#ECE8DD;
+    --ink:#1B1A16;
+    --ink-soft:#56544B;
+    --line:rgba(27,26,22,.13);
+    --line-strong:rgba(27,26,22,.32);
+    --accent:#2F5D50;       /* deep pine */
+    --accent-soft:rgba(47,93,80,.10);
+    --display:"Fraunces",Georgia,serif;
+    --body:"Hanken Grotesk",-apple-system,sans-serif;
+    --maxw:1180px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* fine grain overlay for paper texture */
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:9999;pointer-events:none;
+    opacity:.035;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection{background:var(--accent);color:var(--paper)}
+
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+
+  /* ───────── kicker / labels ───────── */
+  .kicker{
+    font-size:12px;font-weight:600;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .kicker::before{content:"";width:26px;height:1px;background:var(--accent)}
+
+  /* ───────── nav ───────── */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;
+    backdrop-filter:blur(8px);
+    background:rgba(244,241,234,.72);
+    border-bottom:1px solid transparent;
+    transition:border-color .4s ease, padding .4s ease;
+  }
+  nav.scrolled{border-bottom-color:var(--line);padding:13px 32px}
+  nav .brand{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-.01em}
+  nav .links{display:flex;gap:34px;font-size:14px;font-weight:500}
+  nav .links a{position:relative;color:var(--ink-soft);transition:color .25s}
+  nav .links a::after{
+    content:"";position:absolute;left:0;bottom:-5px;height:1px;width:0;
+    background:var(--accent);transition:width .3s ease;
+  }
+  nav .links a:hover,nav .links a.active{color:var(--ink)}
+  nav .links a.active::after,nav .links a:hover::after{width:100%}
+  @media(max-width:720px){nav .links{display:none}}
+
+  /* ───────── hero ───────── */
+  header{
+    min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+    padding:140px 0 80px;position:relative;
+  }
+  .hero-meta{
+    display:flex;flex-wrap:wrap;gap:8px 26px;margin-bottom:34px;
+    font-size:15px;font-weight:500;color:var(--ink-soft);
+  }
+  .hero-meta .dot{color:var(--accent)}
+  h1{
+    font-family:var(--display);
+    font-weight:300;
+    font-size:clamp(3.4rem,11vw,9.2rem);
+    line-height:.92;
+    letter-spacing:-.035em;
+  }
+  h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+  .hero-sub{
+    margin-top:38px;max-width:540px;font-size:19px;line-height:1.55;color:var(--ink-soft);
+  }
+  .scrollcue{
+    position:absolute;bottom:38px;left:32px;
+    font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);
+    display:flex;align-items:center;gap:10px;
+  }
+  .scrollcue .bar{width:1px;height:42px;background:var(--line-strong);position:relative;overflow:hidden}
+  .scrollcue .bar::after{content:"";position:absolute;top:-100%;left:0;width:100%;height:100%;background:var(--accent);animation:drop 2.4s infinite}
+  @keyframes drop{0%{top:-100%}60%,100%{top:100%}}
+
+  /* ───────── section frame ───────── */
+  section{padding:118px 0;border-top:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:24px;margin-bottom:64px;flex-wrap:wrap}
+  .sec-num{font-family:var(--display);font-size:15px;color:var(--accent);font-weight:500;letter-spacing:.05em}
+  .sec-title{font-family:var(--display);font-weight:400;font-size:clamp(2.1rem,5vw,3.4rem);line-height:1;letter-spacing:-.025em}
+  .sec-lead{margin-left:auto;max-width:380px;color:var(--ink-soft);font-size:16px}
+  @media(max-width:720px){.sec-lead{margin-left:0;width:100%}}
+
+  /* ───────── schedule ───────── */
+  .days{display:flex;gap:10px;margin-bottom:44px;flex-wrap:wrap}
+  .day-btn{
+    font-family:var(--body);font-size:14px;font-weight:600;cursor:pointer;
+    padding:9px 20px;border:1px solid var(--line-strong);border-radius:100px;
+    background:transparent;color:var(--ink-soft);transition:.25s;
+  }
+  .day-btn:hover{border-color:var(--ink)}
+  .day-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .day-panel{display:none;animation:fade .5s ease}
+  .day-panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .slot{
+    display:grid;grid-template-columns:130px 1fr;gap:32px;
+    padding:22px 0;border-top:1px solid var(--line);align-items:baseline;
+    transition:padding-left .3s ease;
+  }
+  .slot:hover{padding-left:10px}
+  .slot:last-child{border-bottom:1px solid var(--line)}
+  .slot .time{font-variant-numeric:tabular-nums;font-weight:600;font-size:15px;color:var(--accent)}
+  .slot .what{font-size:19px;font-weight:500;letter-spacing:-.01em}
+  .slot .who{margin-top:4px;font-size:15px;color:var(--ink-soft)}
+  .slot.break .what{font-weight:400;font-style:italic;color:var(--ink-soft);font-family:var(--display)}
+  @media(max-width:560px){.slot{grid-template-columns:1fr;gap:6px}}
+
+  /* ───────── speakers ───────── */
+  .speakers{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  @media(max-width:860px){.speakers{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:540px){.speakers{grid-template-columns:1fr}}
+  .spk{background:var(--paper);padding:34px 30px 38px;position:relative;transition:background .3s}
+  .spk:hover{background:var(--paper-2)}
+  .spk .av{
+    width:50px;height:50px;border-radius:50%;margin-bottom:22px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--display);font-size:18px;color:var(--paper);
+    background:var(--accent);
+  }
+  .spk h3{font-family:var(--display);font-weight:500;font-size:23px;letter-spacing:-.01em}
+  .spk .aff{font-size:14px;color:var(--ink-soft);margin-top:2px}
+  .spk .talk{margin-top:18px;font-size:16px;line-height:1.45}
+  .spk .talk::before{content:"“";font-family:var(--display);color:var(--accent)}
+  .spk .talk::after{content:"”";font-family:var(--display);color:var(--accent)}
+
+  /* ───────── travel & lodging ───────── */
+  .info{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+  @media(max-width:820px){.info{grid-template-columns:1fr;gap:0}}
+  .info-card{padding-top:28px;border-top:2px solid var(--ink)}
+  @media(max-width:820px){.info-card{border-top:1px solid var(--line);padding:28px 0}.info-card:first-child{border-top:2px solid var(--ink)}}
+  .info-card h3{font-family:var(--display);font-weight:500;font-size:24px;margin-bottom:14px;letter-spacing:-.01em}
+  .info-card p{color:var(--ink-soft);font-size:16px;margin-bottom:14px}
+  .info-card ul{list-style:none}
+  .info-card li{padding:9px 0;border-bottom:1px solid var(--line);font-size:15px;display:flex;justify-content:space-between;gap:16px}
+  .info-card li span{color:var(--ink-soft);text-align:right}
+
+  /* ───────── footer ───────── */
+  footer{border-top:1px solid var(--line);padding:70px 0 56px}
+  .foot-grid{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap}
+  footer .big{font-family:var(--display);font-weight:300;font-size:clamp(2rem,6vw,4rem);line-height:1;letter-spacing:-.03em}
+  footer .big a{border-bottom:1px solid var(--line-strong);transition:border-color .3s}
+  footer .big a:hover{border-color:var(--accent);color:var(--accent)}
+  footer .fine{font-size:13px;color:var(--ink-soft);line-height:1.7}
+
+  /* ───────── reveal on scroll ───────── */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* hero load stagger */
+  .load{opacity:0;transform:translateY(20px);animation:up .9s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes up{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.2s}.d3{animation-delay:.35s}.d4{animation-delay:.5s}
+</style>
+</head>
+<body>
+
+<!-- ══════════ NAV ══════════ EDIT: brand name + links -->
+<nav id="nav">
+  <a href="#top" class="brand">Voss&nbsp;Lab</a>
+  <div class="links">
+    <a href="#schedule">Schedule</a>
+    <a href="#talks">Talks</a>
+    <a href="#travel">Travel</a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ EDIT: dates, location, title, blurb -->
+<header id="top">
+  <div class="wrap">
+    <div class="hero-meta load d1">
+      <span>24–26 September 2026</span>
+      <span class="dot">◆</span>
+      <span>Talloires · Lake Annecy</span>
+      <span class="dot">◆</span>
+      <span>French Alps</span>
+    </div>
+    <h1 class="load d2">Annual<br>Lab <em>Retreat</em></h1>
+    <p class="hero-sub load d3">
+      Three days away from the bench — for the whole group to share unfinished
+      ideas, argue about results, and remember why the science is worth doing.
+      All members, rotation students, and alumni welcome.
+    </p>
+  </div>
+  <div class="scrollcue load d4"><span class="bar"></span>Scroll</div>
+</header>
+
+<!-- ══════════ 01 · SCHEDULE ══════════ EDIT: all slots below -->
+<section id="schedule">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">Schedule</h2>
+      <p class="sec-lead">A loose frame, not a cage. Sessions are 90 minutes with long breaks for the conversations that actually matter.</p>
+    </div>
+
+    <div class="days reveal">
+      <button class="day-btn active" data-day="0">Thu · Day 1</button>
+      <button class="day-btn" data-day="1">Fri · Day 2</button>
+      <button class="day-btn" data-day="2">Sat · Day 3</button>
+    </div>
+
+    <!-- DAY 1 -->
+    <div class="day-panel active reveal" data-panel="0">
+      <div class="slot"><div class="time">14:00</div><div><div class="what">Arrival & check-in</div><div class="who">Lakeside lodge — drop bags, grab coffee</div></div></div>
+      <div class="slot"><div class="time">15:30</div><div><div class="what">Opening & year in review</div><div class="who">Dr. Elena Voss</div></div></div>
+      <div class="slot break"><div class="time">16:30</div><div><div class="what">Walk by the water</div></div></div>
+      <div class="slot"><div class="time">17:00</div><div><div class="what">Lightning talks — round one</div><div class="who">All first-years, 5 min each</div></div></div>
+      <div class="slot"><div class="time">19:30</div><div><div class="what">Welcome dinner</div><div class="who">Auberge du Lac</div></div></div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-panel reveal" data-panel="1">
+      <div class="slot"><div class="time">09:00</div><div><div class="what">Keynote — open problems in the field</div><div class="who">Prof. Idris Karim (invited)</div></div></div>
+      <div class="slot break"><div class="time">10:30</div><div><div class="what">Coffee & pastries</div></div></div>
+      <div class="slot"><div class="time">11:00</div><div><div class="what">Project deep-dives — Genomics team</div><div class="who">Maya, Tomás, Wei</div></div></div>
+      <div class="slot"><div class="time">13:00</div><div><div class="what">Lunch & free afternoon</div><div class="who">Hike, kayak, or nap — your call</div></div></div>
+      <div class="slot"><div class="time">17:00</div><div><div class="what">Methods clinic — bring a broken analysis</div><div class="who">Whiteboard session</div></div></div>
+      <div class="slot"><div class="time">20:00</div><div><div class="what">Bonfire & poster slam</div></div></div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-panel reveal" data-panel="2">
+      <div class="slot"><div class="time">09:30</div><div><div class="what">Where we're headed — next year's directions</div><div class="who">Group discussion</div></div></div>
+      <div class="slot"><div class="time">11:00</div><div><div class="what">Collaborations & wrap-up</div><div class="who">Dr. Elena Voss</div></div></div>
+      <div class="slot break"><div class="time">12:00</div><div><div class="what">Farewell lunch</div></div></div>
+      <div class="slot"><div class="time">13:30</div><div><div class="what">Departures</div><div class="who">Shuttle to Annecy station</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 02 · TALKS ══════════ EDIT: speaker cards -->
+<section id="talks">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Talks &amp; Speakers</h2>
+      <p class="sec-lead">Featured sessions across the three days. Initials stand in for photos — swap in headshots if you'd like.</p>
+    </div>
+
+    <div class="speakers reveal">
+      <div class="spk"><div class="av">EV</div><h3>Elena Voss</h3><div class="aff">PI · Voss Lab</div><p class="talk">Where the lab has been, and the questions still keeping me up at night.</p></div>
+      <div class="spk"><div class="av">IK</div><h3>Idris Karim</h3><div class="aff">Keynote · ETH Zürich</div><p class="talk">Open problems at the edge of single-cell genomics.</p></div>
+      <div class="spk"><div class="av">MR</div><h3>Maya Rao</h3><div class="aff">Postdoc</div><p class="talk">Reconstructing lineage trees from noisy data.</p></div>
+      <div class="spk"><div class="av">TS</div><h3>Tomás Silva</h3><div class="aff">PhD candidate</div><p class="talk">A model that finally fits — and why I don't trust it yet.</p></div>
+      <div class="spk"><div class="av">WL</div><h3>Wei Lin</h3><div class="aff">PhD candidate</div><p class="talk">Scaling our pipeline to a million cells without losing our minds.</p></div>
+      <div class="spk"><div class="av">+</div><h3>Lightning talks</h3><div class="aff">Everyone</div><p class="talk">Five minutes, one slide, no excuses — the whole group presents.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 03 · TRAVEL ══════════ EDIT: logistics -->
+<section id="travel">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Travel &amp; Lodging</h2>
+      <p class="sec-lead">Everything you need to get there and settle in. Questions? Email the address at the bottom.</p>
+    </div>
+
+    <div class="info reveal">
+      <div class="info-card">
+        <h3>Getting there</h3>
+        <p>The venue sits on the eastern shore of Lake Annecy, about 45 minutes from the city by road.</p>
+        <ul>
+          <li>Nearest station <span>Annecy (SNCF)</span></li>
+          <li>Nearest airport <span>Geneva (GVA)</span></li>
+          <li>Group shuttle <span>Thu 13:00</span></li>
+          <li>Parking on-site <span>Free</span></li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Where you'll stay</h3>
+        <p>Shared lodge rooms (2 per room) with breakfast included. Linens provided.</p>
+        <ul>
+          <li>Check-in <span>Thu from 14:00</span></li>
+          <li>Check-out <span>Sat by 11:00</span></li>
+          <li>Wi-Fi <span>Throughout</span></li>
+          <li>Cost <span>Covered by lab</span></li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>What to bring</h3>
+        <p>It's the mountains in autumn — pack layers and something for the lake.</p>
+        <ul>
+          <li>Walking shoes <span>Essential</span></li>
+          <li>Swimwear <span>Optional</span></li>
+          <li>Laptop <span>For talks</span></li>
+          <li>One unfinished idea <span>Required</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ EDIT: contact -->
+<footer>
+  <div class="wrap foot-grid">
+    <div class="big">Questions? <a href="mailto:retreat@vosslab.org">retreat@vosslab.org</a></div>
+    <div class="fine">
+      Voss Lab Annual Retreat 2026<br>
+      Talloires · Lake Annecy · France<br>
+      24–26 September 2026
+    </div>
+  </div>
+</footer>
+
+<script>
+  // nav background on scroll
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40));
+
+  // schedule day switcher
+  document.querySelectorAll('.day-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const d=btn.dataset.day;
+      document.querySelectorAll('.day-btn').forEach(b=>b.classList.toggle('active',b===btn));
+      document.querySelectorAll('.day-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===d));
+    });
+  });
+
+  // reveal on scroll
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // active nav link by section
+  const secs=[...document.querySelectorAll('section')];
+  const links=[...document.querySelectorAll('.links a')];
+  addEventListener('scroll',()=>{
+    let cur='';
+    secs.forEach(s=>{if(scrollY>=s.offsetTop-120)cur=s.id;});
+    links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur));
+  });
+</script>
+</body>
+</html>
