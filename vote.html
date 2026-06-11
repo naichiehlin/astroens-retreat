@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AstroENS Retreat · Concours de Cuisine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0c1022;
+    --night-2:#141a33;
+    --parchment:#f6efde;
+    --parchment-2:#efe5cd;
+    --ink:#2b2316;
+    --ink-soft:#6b5f49;
+    --gold:#c9a14e;
+    --gold-bright:#e8c878;
+    --wine:#8c2f39;
+    --teal:#3e7d7a;
+    --radius:14px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Outfit',system-ui,sans-serif;
+    background:var(--night);
+    color:var(--parchment);
+    min-height:100vh;
+    background-image:
+      radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,.8) 50%, transparent 51%),
+      radial-gradient(1px 1px at 78% 12%, rgba(255,255,255,.6) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 55% 35%, rgba(232,200,120,.9) 50%, transparent 51%),
+      radial-gradient(1px 1px at 32% 65%, rgba(255,255,255,.5) 50%, transparent 51%),
+      radial-gradient(1px 1px at 88% 58%, rgba(255,255,255,.7) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 8% 85%, rgba(232,200,120,.7) 50%, transparent 51%),
+      radial-gradient(1px 1px at 65% 88%, rgba(255,255,255,.55) 50%, transparent 51%),
+      radial-gradient(1px 1px at 42% 8%, rgba(255,255,255,.65) 50%, transparent 51%),
+      linear-gradient(180deg,#0c1022 0%,#141a33 60%,#0c1022 100%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:2rem 1rem 4rem}
+  header{text-align:center;margin-bottom:1.8rem}
+  .eyebrow{
+    font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--gold);font-weight:500;
+  }
+  h1{
+    font-family:'Cormorant Garamond',Georgia,serif;
+    font-weight:600;font-size:clamp(2.2rem,7vw,3.2rem);
+    line-height:1.05;margin:.4rem 0 .3rem;color:var(--parchment);
+  }
+  h1 em{font-style:italic;color:var(--gold-bright)}
+  .sub{color:rgba(246,239,222,.65);font-weight:300;font-size:.95rem}
+  .orn{display:flex;align-items:center;gap:.7rem;justify-content:center;margin:.9rem auto 0;color:var(--gold)}
+  .orn::before,.orn::after{content:"";height:1px;width:64px;background:linear-gradient(90deg,transparent,var(--gold));}
+  .orn::after{background:linear-gradient(90deg,var(--gold),transparent)}
+
+  nav{display:flex;gap:.5rem;justify-content:center;margin-bottom:1.6rem}
+  nav button{
+    font-family:inherit;font-size:.85rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+    background:transparent;color:rgba(246,239,222,.6);
+    border:1px solid rgba(201,161,78,.35);border-radius:999px;
+    padding:.55rem 1.3rem;cursor:pointer;transition:all .2s;
+  }
+  nav button:hover{color:var(--gold-bright);border-color:var(--gold)}
+  nav button.active{background:var(--gold);color:var(--night);border-color:var(--gold);font-weight:600}
+  nav button:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
+
+  .card{
+    background:var(--parchment);color:var(--ink);
+    border-radius:var(--radius);
+    padding:1.6rem 1.4rem;
+    box-shadow:0 18px 50px rgba(0,0,0,.5);
+    border:1px solid rgba(201,161,78,.4);
+  }
+  .card + .card{margin-top:1.2rem}
+  .card h2{
+    font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;
+    font-size:1.45rem;margin-bottom:.25rem;
+  }
+  .card .hint{font-size:.85rem;color:var(--ink-soft);margin-bottom:1rem}
+
+  .step-label{
+    font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--wine);font-weight:600;margin-bottom:.3rem;
+  }
+
+  .team-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.7rem;margin-top:.8rem}
+  .team-pick button{
+    font-family:inherit;background:#fff;border:1.5px solid #d8cdb4;border-radius:10px;
+    padding:.9rem .8rem;cursor:pointer;text-align:left;transition:all .15s;
+  }
+  .team-pick button:hover{border-color:var(--gold)}
+  .team-pick button.sel{border-color:var(--wine);background:#fdf6f0;box-shadow:0 0 0 2px rgba(140,47,57,.18)}
+  .team-pick .tname{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.15rem;display:block}
+  .team-pick .tmeta{font-size:.78rem;color:var(--ink-soft)}
+
+  input[type=text]{
+    font-family:inherit;font-size:1rem;width:100%;
+    padding:.7rem .9rem;border:1.5px solid #d8cdb4;border-radius:10px;background:#fff;color:var(--ink);
+    margin-top:.5rem;
+  }
+  input[type=text]:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,161,78,.2)}
+
+  .judge-block{margin-top:1.3rem;padding-top:1.1rem;border-top:1px dashed #d8cdb4}
+  .judge-block h3{
+    font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--wine);
+  }
+  .cat-row{margin-top:.9rem}
+  .cat-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.35rem}
+  .cat-name{font-weight:500;font-size:.95rem}
+  .cat-desc{font-size:.75rem;color:var(--ink-soft);font-weight:300}
+  .cat-val{
+    font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.25rem;color:var(--wine);
+    min-width:2.2rem;text-align:right;
+  }
+  .stars{display:flex;gap:.25rem;flex-wrap:wrap}
+  .stars button{
+    flex:1;min-width:26px;height:34px;border-radius:7px;border:1px solid #d8cdb4;background:#fff;
+    cursor:pointer;font-family:inherit;font-size:.8rem;color:var(--ink-soft);transition:all .1s;
+  }
+  .stars button:hover{border-color:var(--gold)}
+  .stars button.on{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:600}
+  .stars button:focus-visible{outline:2px solid var(--wine);outline-offset:1px}
+
+  .submit-btn{
+    display:block;width:100%;margin-top:1.5rem;
+    font-family:inherit;font-size:1rem;font-weight:600;letter-spacing:.05em;
+    background:var(--wine);color:#fff;border:none;border-radius:10px;
+    padding:.95rem;cursor:pointer;transition:background .2s;
+  }
+  .submit-btn:hover{background:#a33a45}
+  .submit-btn:disabled{background:#c4b9a2;cursor:not-allowed}
+
+  .msg{margin-top:.9rem;padding:.75rem .9rem;border-radius:9px;font-size:.9rem;display:none}
+  .msg.ok{display:block;background:#e7f2ea;color:#27553a;border:1px solid #bcd9c5}
+  .msg.err{display:block;background:#fbeaea;color:#7a2a2a;border:1px solid #e6bcbc}
+
+  /* Results */
+  .podium{display:grid;gap:1rem}
+  .res-team{background:#fff;border:1.5px solid #e2d8c0;border-radius:12px;padding:1.1rem 1.2rem;position:relative}
+  .res-team.first{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,161,78,.3)}
+  .res-rank{
+    position:absolute;top:-12px;left:14px;background:var(--night);color:var(--gold-bright);
+    font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+    padding:.25rem .7rem;border-radius:999px;border:1px solid var(--gold);
+  }
+  .res-head{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.7rem;flex-wrap:wrap}
+  .res-name{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.45rem}
+  .res-total{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.6rem;color:var(--wine)}
+  .res-total small{font-size:.85rem;color:var(--ink-soft);font-family:'Outfit',sans-serif;font-weight:400}
+  .bar-row{display:grid;grid-template-columns:88px 1fr 44px;align-items:center;gap:.6rem;margin-top:.35rem;font-size:.83rem}
+  .bar-track{height:9px;background:#efe8d6;border-radius:99px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width .5s ease}
+  .bar-num{text-align:right;font-weight:600;color:var(--ink)}
+  .participation{margin-top:1.1rem;font-size:.82rem;color:var(--ink-soft)}
+  .participation b{color:var(--ink)}
+
+  details.method{margin-top:1.2rem;font-size:.86rem;color:var(--ink-soft)}
+  details.method summary{cursor:pointer;color:var(--wine);font-weight:500}
+  details.method p{margin-top:.5rem;line-height:1.55}
+  .wtable{margin-top:.5rem;width:100%;border-collapse:collapse;font-size:.84rem}
+  .wtable th,.wtable td{text-align:left;padding:.35rem .5rem;border-bottom:1px solid #e2d8c0}
+  .wtable th{color:var(--ink);font-weight:600}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap}
+  .ghost-btn{
+    font-family:inherit;font-size:.8rem;background:transparent;border:1px solid #d8cdb4;border-radius:8px;
+    padding:.45rem .85rem;cursor:pointer;color:var(--ink-soft);
+  }
+  .ghost-btn:hover{border-color:var(--wine);color:var(--wine)}
+  .danger{color:#a03030;border-color:#dcb6b6}
+  .shared-note{
+    margin-top:1.4rem;text-align:center;font-size:.75rem;color:rgba(246,239,222,.45);
+  }
+  .empty{
+    text-align:center;padding:2rem 1rem;color:var(--ink-soft);
+  }
+  .empty .big{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--ink);margin-bottom:.3rem}
+  .hidden{display:none}
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">AstroENS Retreat</div>
+    <h1>Concours de <em>Cuisine</em></h1>
+    <div class="sub">Three teams · one sky · four courses of judgment</div>
+    <div class="orn">✦</div>
+  </header>
+
+  <nav>
+    <button id="tabVote" class="active" onclick="showTab('vote')">Cast your vote</button>
+    <button id="tabResults" onclick="showTab('results')">Results</button>
+  </nav>
+
+  <!-- ================= VOTE TAB ================= -->
+  <section id="voteTab">
+    <div class="card">
+      <div class="step-label">Step 1 · Who are you?</div>
+      <h2>Identify yourself, chef</h2>
+      <div class="hint">You'll rate the other two teams — never your own. One ballot per person (re-submitting replaces your previous vote).</div>
+      <div class="team-pick" id="teamPick"></div>
+      <input type="text" id="voterName" placeholder="Your name (e.g. Camille)" maxlength="40">
+    </div>
+
+    <div class="card hidden" id="ratingCard">
+      <div class="step-label">Step 2 · The verdict</div>
+      <h2>Rate each team, 1–10 per course</h2>
+      <div class="hint">10 = worthy of a Michelin star, 1 = the smoke alarm was the dinner bell.</div>
+      <div id="judgeBlocks"></div>
+      <button class="submit-btn" id="submitBtn" onclick="submitBallot()">Seal my ballot ✦</button>
+      <div class="msg" id="voteMsg"></div>
+    </div>
+  </section>
+
+  <!-- ================= RESULTS TAB ================= -->
+  <section id="resultsTab" class="hidden">
+    <div class="card" id="lockCard">
+      <div class="step-label">Restricted area</div>
+      <h2>🔒 Results are under embargo</h2>
+      <div class="hint">Only the organizers may peek before the grand reveal. Enter the password to unlock the standings.</div>
+      <input type="password" id="resultsPwd" placeholder="Password" autocomplete="off"
+             style="font-family:inherit;font-size:1rem;width:100%;padding:.7rem .9rem;border:1.5px solid #d8cdb4;border-radius:10px;background:#fff;color:var(--ink);margin-top:.5rem">
+      <button class="submit-btn" onclick="tryUnlock()">Unlock ✦</button>
+      <div class="msg" id="lockMsg"></div>
+    </div>
+
+    <div class="card hidden" id="resultsCard">
+      <div class="toolbar">
+        <div>
+          <div class="step-label">Live standings</div>
+          <h2>Weighted scores</h2>
+        </div>
+        <div>
+          <button class="ghost-btn" onclick="loadResults()">↻ Refresh</button>
+          <button class="ghost-btn danger" id="resetBtn" onclick="resetAll()">Reset all votes</button>
+        </div>
+      </div>
+      <div id="resultsBody"><div class="empty"><div class="big">Loading…</div></div></div>
+
+      <details class="method">
+        <summary>How the weighting works</summary>
+        <p>
+          Teams have different sizes (6, 5 and 4 members), so a raw average would let bigger teams
+          dominate the jury. Instead, each ballot is weighted by <b>1 / (size of the voter's team)</b>,
+          so every <i>team</i> carries exactly the same total voting power, no matter how many of its
+          members vote. A team's score in each course is the weighted average of all ballots it received;
+          the total is the sum over the four courses (max 40).
+        </p>
+        <table class="wtable">
+          <tr><th>Voter's team</th><th>Members</th><th>Weight per ballot</th></tr>
+          <tr><td>Team Parmesan</td><td>6</td><td>1/6 ≈ 0.167</td></tr>
+          <tr><td>Team B</td><td>5</td><td>1/5 = 0.200</td></tr>
+          <tr><td>Team CRALactic Chefs</td><td>4</td><td>1/4 = 0.250</td></tr>
+        </table>
+      </details>
+    </div>
+  </section>
+
+  <div class="shared-note">✦ Ballots are stored securely on the retreat server. ✦</div>
+</div>
+
+<script>
+const TEAMS = [
+  { id:'parmesan',  name:'Team Parmesan',         size:6 },
+  { id:'teamb',     name:'Team B',                 size:5 },
+  { id:'cralactic', name:'Team CRALactic Chefs',   size:4 },
+];
+const CATS = [
+  { id:'entree',  name:'Entrée',  desc:'the opening act' },
+  { id:'plat',    name:'Plat',    desc:'the main event' },
+  { id:'dessert', name:'Dessert', desc:'the sweet finale' },
+  { id:'service', name:'Service', desc:'timing · cleanliness · explanation' },
+];
+
+let myTeam = null;
+let scores = {};          // scores[targetTeamId][catId] = number
+let adminPwd = '';        // kept in memory after successful unlock
+const API = '/api/votes'; // Netlify function endpoint
+
+/* ---------- UI: team pick ---------- */
+function renderTeamPick(){
+  const el = document.getElementById('teamPick');
+  el.innerHTML = '';
+  TEAMS.forEach(t=>{
+    const b = document.createElement('button');
+    b.innerHTML = `<span class="tname">${t.name}</span><span class="tmeta">${t.size} members · ballot weight 1/${t.size}</span>`;
+    b.onclick = ()=>{ myTeam=t.id; renderTeamPick(); renderJudgeBlocks(); };
+    if(myTeam===t.id) b.classList.add('sel');
+    el.appendChild(b);
+  });
+}
+
+function renderJudgeBlocks(){
+  const card = document.getElementById('ratingCard');
+  const wrap = document.getElementById('judgeBlocks');
+  if(!myTeam){ card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+  wrap.innerHTML = '';
+  const targets = TEAMS.filter(t=>t.id!==myTeam);
+  targets.forEach(t=>{
+    if(!scores[t.id]) scores[t.id]={};
+    const div = document.createElement('div');
+    div.className='judge-block';
+    div.innerHTML = `<h3>${t.name}</h3>`;
+    CATS.forEach(c=>{
+      const row = document.createElement('div');
+      row.className='cat-row';
+      const val = scores[t.id][c.id];
+      row.innerHTML = `
+        <div class="cat-head">
+          <div><span class="cat-name">${c.name}</span> <span class="cat-desc">— ${c.desc}</span></div>
+          <div class="cat-val" id="val-${t.id}-${c.id}">${val??'–'}</div>
+        </div>`;
+      const stars = document.createElement('div');
+      stars.className='stars';
+      for(let n=1;n<=10;n++){
+        const sb=document.createElement('button');
+        sb.textContent=n;
+        sb.setAttribute('aria-label',`${c.name} for ${t.name}: ${n} out of 10`);
+        if(val>=n) sb.classList.add('on');
+        sb.onclick=()=>{ scores[t.id][c.id]=n; renderJudgeBlocks(); };
+        stars.appendChild(sb);
+      }
+      row.appendChild(stars);
+      div.appendChild(row);
+    });
+    wrap.appendChild(div);
+  });
+}
+
+/* ---------- submit ---------- */
+function sanitize(s){ return s.toLowerCase().trim().replace(/[^a-z0-9àâçéèêëîïôûùüÿñ-]+/g,'_').slice(0,40); }
+
+async function submitBallot(){
+  const msg = document.getElementById('voteMsg');
+  msg.className='msg';
+  const name = document.getElementById('voterName').value.trim();
+  if(!myTeam){ msg.className='msg err'; msg.textContent='Please select your team first.'; return; }
+  if(!name){ msg.className='msg err'; msg.textContent='Please enter your name so we count one ballot per chef.'; return; }
+  const targets = TEAMS.filter(t=>t.id!==myTeam);
+  for(const t of targets){
+    for(const c of CATS){
+      if(!scores[t.id] || !scores[t.id][c.id]){
+        msg.className='msg err';
+        msg.textContent=`Missing score: ${c.name} for ${t.name}.`;
+        return;
+      }
+    }
+  }
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true; btn.textContent='Sealing…';
+  try{
+    const res = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name, team: myTeam, scores })
+    });
+    if(!res.ok){
+      const e = await res.json().catch(()=>({}));
+      throw new Error(e.error || 'Server error');
+    }
+    msg.className='msg ok';
+    msg.textContent=`Merci, ${name}! Your ballot is sealed. You can re-submit any time to change it.`;
+  }catch(e){
+    msg.className='msg err';
+    msg.textContent='Could not save your ballot — please try again. ('+e.message+')';
+  }
+  btn.disabled=false; btn.textContent='Seal my ballot ✦';
+}
+
+/* ---------- results ---------- */
+async function loadResults(){
+  if(!unlocked) return;
+  const body=document.getElementById('resultsBody');
+  body.innerHTML='<div class="empty"><div class="big">Counting ballots…</div></div>';
+  let ballots=[];
+  try{
+    const res = await fetch(`${API}?pwd=${encodeURIComponent(adminPwd)}`);
+    if(res.status===401){ // password changed / session invalid
+      unlocked=false; adminPwd='';
+      document.getElementById('lockCard').classList.remove('hidden');
+      document.getElementById('resultsCard').classList.add('hidden');
+      return;
+    }
+    if(!res.ok) throw new Error('Server error');
+    ballots = (await res.json()).ballots || [];
+  }catch(e){
+    body.innerHTML='<div class="empty"><div class="big">Could not load results</div>Check your connection and hit Refresh.</div>';
+    return;
+  }
+  if(ballots.length===0){
+    body.innerHTML='<div class="empty"><div class="big">No ballots yet</div>The jury is still tasting. Check back soon.</div>';
+    return;
+  }
+  const sizeOf = Object.fromEntries(TEAMS.map(t=>[t.id,t.size]));
+  const results = TEAMS.map(team=>{
+    const cat = {}; let total=0;
+    CATS.forEach(c=>{
+      let num=0, den=0;
+      ballots.forEach(b=>{
+        if(b.team===team.id) return;
+        const s=b.scores?.[team.id]?.[c.id];
+        if(typeof s!=='number') return;
+        const w=1/sizeOf[b.team];
+        num+=w*s; den+=w;
+      });
+      cat[c.id]= den>0 ? num/den : null;
+      if(cat[c.id]!==null) total+=cat[c.id];
+    });
+    return { team, cat, total };
+  }).sort((a,b)=>b.total-a.total);
+
+  const counts = Object.fromEntries(TEAMS.map(t=>[t.id,0]));
+  ballots.forEach(b=>{ if(counts[b.team]!==undefined) counts[b.team]++; });
+
+  const ranks=['1st — Étoile d\'or','2nd','3rd'];
+  let html='<div class="podium">';
+  results.forEach((r,i)=>{
+    html+=`<div class="res-team ${i===0?'first':''}">
+      <div class="res-rank">${ranks[i]||(i+1)+'th'}</div>
+      <div class="res-head">
+        <div class="res-name">${r.team.name}</div>
+        <div class="res-total">${r.total.toFixed(2)} <small>/ 40</small></div>
+      </div>`;
+    CATS.forEach(c=>{
+      const v=r.cat[c.id];
+      const pct=v?(v/10*100):0;
+      html+=`<div class="bar-row">
+        <div>${c.name}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <div class="bar-num">${v?v.toFixed(2):'–'}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  html+=`<div class="participation">Ballots received: ${
+    TEAMS.map(t=>`<b>${counts[t.id]}/${t.size}</b> ${t.name.replace('Team ','')}`).join(' · ')
+  }</div>`;
+  body.innerHTML=html;
+}
+
+let resetArmed = false;
+let resetTimer = null;
+
+async function resetAll(){
+  if(!unlocked) return;
+  const btn = document.getElementById('resetBtn');
+  if(!resetArmed){
+    // First click: arm the button instead of using confirm() (blocked in sandboxed frames)
+    resetArmed = true;
+    btn.textContent = '⚠ Click again to wipe ALL ballots';
+    btn.style.background = '#a03030';
+    btn.style.color = '#fff';
+    btn.style.borderColor = '#a03030';
+    resetTimer = setTimeout(()=>{ disarmReset(); }, 5000);
+    return;
+  }
+  // Second click within 5s: actually delete
+  clearTimeout(resetTimer);
+  btn.textContent = 'Deleting…';
+  btn.disabled = true;
+  try{
+    await fetch(`${API}?pwd=${encodeURIComponent(adminPwd)}`, { method:'DELETE' });
+  }catch(e){}
+  btn.disabled = false;
+  disarmReset();
+  loadResults();
+}
+
+function disarmReset(){
+  resetArmed = false;
+  const btn = document.getElementById('resetBtn');
+  if(btn){
+    btn.textContent = 'Reset all votes';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+  }
+}
+
+/* ---------- results lock (password verified server-side) ---------- */
+let unlocked = false;
+
+async function tryUnlock(){
+  const msg = document.getElementById('lockMsg');
+  const input = document.getElementById('resultsPwd');
+  const pwd = input.value;
+  if(!pwd){ msg.className='msg err'; msg.textContent='Enter the password.'; return; }
+  msg.className='msg';
+  try{
+    const res = await fetch(`${API}?pwd=${encodeURIComponent(pwd)}`);
+    if(res.status===401){
+      msg.className='msg err';
+      msg.textContent='Wrong password. The standings stay among the stars.';
+      input.value=''; input.focus();
+      return;
+    }
+    if(!res.ok) throw new Error();
+    adminPwd = pwd;
+    unlocked = true;
+    document.getElementById('lockCard').classList.add('hidden');
+    document.getElementById('resultsCard').classList.remove('hidden');
+    input.value='';
+    loadResults();
+  }catch(e){
+    msg.className='msg err';
+    msg.textContent='Could not reach the server — please try again.';
+  }
+}
+
+/* ---------- tabs ---------- */
+function showTab(t){
+  document.getElementById('voteTab').classList.toggle('hidden', t!=='vote');
+  document.getElementById('resultsTab').classList.toggle('hidden', t!=='results');
+  document.getElementById('tabVote').classList.toggle('active', t==='vote');
+  document.getElementById('tabResults').classList.toggle('active', t==='results');
+  if(t==='results'){
+    if(unlocked){ loadResults(); }
+    else{ setTimeout(()=>document.getElementById('resultsPwd')?.focus(), 50); }
+  }
+}
+
+document.getElementById('resultsPwd').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+
+renderTeamPick();
+</script>
+</body>
+</html>

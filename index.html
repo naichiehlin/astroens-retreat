@@ -130,6 +130,11 @@
   .quote{font-family:var(--display);font-style:italic;font-size:clamp(1.3rem,3vw,1.9rem);line-height:1.35;letter-spacing:-.01em;max-width:760px;margin:46px auto 8px;text-align:center;color:var(--ink)}
   .quote span{color:var(--accent)}
   .quote-by{text-align:center;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+  .vote-cta{margin-top:44px;text-align:center}
+  .vote-cta a{display:inline-flex;align-items:center;gap:12px;background:var(--accent);color:var(--paper);font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase;padding:16px 34px;border-radius:999px;transition:background .2s,transform .2s;box-shadow:0 10px 26px rgba(52,64,107,.28)}
+  .vote-cta a:hover{background:#2a3458;transform:translateY(-2px)}
+  .vote-cta a .star{color:var(--gold)}
+  .vote-cta .vote-note{margin-top:12px;font-size:13px;color:var(--ink-soft)}
   .shop{margin-top:54px;border-top:2px solid var(--ink);padding-top:30px}
   .shop h3{font-family:var(--display);font-weight:500;font-size:22px;margin-bottom:6px}
   .shop .note{font-size:14px;color:var(--ink-soft);margin-bottom:24px}
@@ -315,6 +320,12 @@
           <li>Benoît</li><li>Quentin</li><li>Adnan</li><li>Gérard</li><li>David</li>
         </ul>
       </div>
+    </div>
+
+    <!-- EDIT: voting — replace href with your hosted vote page URL (see notes) -->
+    <div class="vote-cta reveal">
+      <a href="vote.html"><span class="star">✦</span> Cast your vote <span class="star">✦</span></a>
+      <p class="vote-note">Rate the other two teams on Entrée, Plat, Dessert &amp; Service. Scores are weighted by team size — results stay locked until the reveal.</p>
     </div>
 
     <p class="quote reveal">“If I don't win the cooking contest, <span>I'm quitting CRAL.</span>”</p>
