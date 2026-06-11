@@ -31,8 +31,8 @@ export default async (req) => {
       clean[t] = {};
       for (const c of CAT_IDS) {
         const v = scores?.[t]?.[c];
-        if (typeof v !== "number" || v < 1 || v > 10)
-          return json({ error: `Missing or invalid score: ${c} for ${t}` }, 400);
+        if (typeof v !== "number" || (v !== 1 && v !== 2))
+          return json({ error: `Score must be 1 or 2: ${c} for ${t}` }, 400);
         clean[t][c] = Math.round(v);
       }
     }
