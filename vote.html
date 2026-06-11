@@ -123,6 +123,16 @@
   .stars button:hover{border-color:var(--gold)}
   .stars button.on{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:600}
   .stars button:focus-visible{outline:2px solid var(--wine);outline-offset:1px}
+  .duel-pick{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+  .duel-pick button{
+    font-family:inherit;font-size:.92rem;font-weight:500;color:var(--ink);
+    background:#fff;border:1.5px solid #d8cdb4;border-radius:10px;
+    padding:.8rem .5rem;cursor:pointer;transition:all .12s;line-height:1.25;
+  }
+  .duel-pick button:hover{border-color:var(--gold)}
+  .duel-pick button.on{background:var(--wine);border-color:var(--wine);color:#fff;font-weight:600}
+  .duel-pick button.on::after{content:" ✦"}
+  .duel-pick button:focus-visible{outline:2px solid var(--wine);outline-offset:1px}
 
   .submit-btn{
     display:block;width:100%;margin-top:1.5rem;
@@ -210,8 +220,8 @@
 
     <div class="card hidden" id="ratingCard">
       <div class="step-label">Step 2 · The verdict</div>
-      <h2>Rate each team: 1 or 2 per course</h2>
-      <div class="hint">2 = the stronger team on that course, 1 = the other. Simple as that.</div>
+      <h2>Pick the winner of each course</h2>
+      <div class="hint">For every course, choose one of the two teams. Your pick gets 2 points; the other team gets 1. No ties, no mercy.</div>
       <div id="judgeBlocks"></div>
       <button class="submit-btn" id="submitBtn" onclick="submitBallot()">Seal my ballot ✦</button>
       <div class="msg" id="voteMsg"></div>
@@ -246,10 +256,12 @@
       <details class="method">
         <summary>How the weighting works</summary>
         <p>
-          Teams have different sizes (6, 5 and 4 members), so a raw average would let bigger teams
-          dominate the jury. Instead, each ballot is weighted by <b>1 / (size of the voter's team)</b>,
-          so every <i>team</i> carries exactly the same total voting power, no matter how many of its
-          members vote. A team's score in each course is the weighted average of all ballots it received;
+          Each voter picks a winner per course between the two other teams: the winner gets 2 points,
+          the other gets 1, so ties on a single ballot are impossible. Teams have different sizes
+          (6, 5 and 4 members), so a raw average would let bigger teams dominate the jury. Instead,
+          each ballot is weighted by <b>1 / (size of the voter's team)</b>, so every <i>team</i>
+          carries exactly the same total voting power, no matter how many of its members vote.
+          A team's score in each course is the weighted average of all ballots it received;
           the total is the sum over the four courses (max 8).
         </p>
         <table class="wtable">
@@ -302,35 +314,34 @@ function renderJudgeBlocks(){
   if(!myTeam){ card.classList.add('hidden'); return; }
   card.classList.remove('hidden');
   wrap.innerHTML = '';
-  const targets = TEAMS.filter(t=>t.id!==myTeam);
-  targets.forEach(t=>{
-    if(!scores[t.id]) scores[t.id]={};
-    const div = document.createElement('div');
-    div.className='judge-block';
-    div.innerHTML = `<h3>${t.name}</h3>`;
-    CATS.forEach(c=>{
-      const row = document.createElement('div');
-      row.className='cat-row';
-      const val = scores[t.id][c.id];
-      row.innerHTML = `
-        <div class="cat-head">
-          <div><span class="cat-name">${c.name}</span> <span class="cat-desc">— ${c.desc}</span></div>
-          <div class="cat-val" id="val-${t.id}-${c.id}">${val??'–'}</div>
-        </div>`;
-      const stars = document.createElement('div');
-      stars.className='stars';
-      for(let n=1;n<=2;n++){
-        const sb=document.createElement('button');
-        sb.textContent = n===2 ? '2 · better' : '1';
-        sb.setAttribute('aria-label',`${c.name} for ${t.name}: ${n} out of 2`);
-        if(val===n) sb.classList.add('on');
-        sb.onclick=()=>{ scores[t.id][c.id]=n; renderJudgeBlocks(); };
-        stars.appendChild(sb);
-      }
-      row.appendChild(stars);
-      div.appendChild(row);
+  const [a,b] = TEAMS.filter(t=>t.id!==myTeam);
+  if(!scores[a.id]) scores[a.id]={};
+  if(!scores[b.id]) scores[b.id]={};
+  CATS.forEach(c=>{
+    const winner = scores[a.id][c.id]===2 ? a.id : (scores[b.id][c.id]===2 ? b.id : null);
+    const row = document.createElement('div');
+    row.className='cat-row';
+    row.innerHTML = `
+      <div class="cat-head">
+        <div><span class="cat-name">${c.name}</span> <span class="cat-desc">— ${c.desc}</span></div>
+      </div>`;
+    const pick = document.createElement('div');
+    pick.className='duel-pick';
+    [a,b].forEach(t=>{
+      const btn = document.createElement('button');
+      btn.textContent = t.name;
+      btn.setAttribute('aria-label', `${c.name}: choose ${t.name} as the winner`);
+      if(winner===t.id) btn.classList.add('on');
+      btn.onclick = ()=>{
+        const other = (t.id===a.id) ? b : a;
+        scores[t.id][c.id] = 2;
+        scores[other.id][c.id] = 1;
+        renderJudgeBlocks();
+      };
+      pick.appendChild(btn);
     });
-    wrap.appendChild(div);
+    row.appendChild(pick);
+    wrap.appendChild(row);
   });
 }
 
@@ -344,13 +355,12 @@ async function submitBallot(){
   if(!myTeam){ msg.className='msg err'; msg.textContent='Please select your team first.'; return; }
   if(!name){ msg.className='msg err'; msg.textContent='Please enter your name so we count one ballot per chef.'; return; }
   const targets = TEAMS.filter(t=>t.id!==myTeam);
-  for(const t of targets){
-    for(const c of CATS){
-      if(!scores[t.id] || !scores[t.id][c.id]){
-        msg.className='msg err';
-        msg.textContent=`Missing score: ${c.name} for ${t.name}.`;
-        return;
-      }
+  for(const c of CATS){
+    const done = targets.every(t => scores[t.id] && scores[t.id][c.id]);
+    if(!done){
+      msg.className='msg err';
+      msg.textContent=`Pick a winner for: ${c.name}.`;
+      return;
     }
   }
   const btn=document.getElementById('submitBtn');

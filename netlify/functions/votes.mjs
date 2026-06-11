@@ -24,17 +24,18 @@ export default async (req) => {
       return json({ error: "Invalid name" }, 400);
     if (!TEAM_IDS.includes(team)) return json({ error: "Invalid team" }, 400);
 
-    // Validate: scores only for the two OTHER teams, integers 1–10, all present
+    // Validate: scores only for the two OTHER teams; per course, exactly one
+    // team gets 2 (winner) and the other gets 1 — no ties possible.
     const targets = TEAM_IDS.filter((t) => t !== team);
     const clean = {};
-    for (const t of targets) {
-      clean[t] = {};
-      for (const c of CAT_IDS) {
-        const v = scores?.[t]?.[c];
-        if (typeof v !== "number" || (v !== 1 && v !== 2))
-          return json({ error: `Score must be 1 or 2: ${c} for ${t}` }, 400);
-        clean[t][c] = Math.round(v);
-      }
+    for (const t of targets) clean[t] = {};
+    for (const c of CAT_IDS) {
+      const vals = targets.map((t) => scores?.[t]?.[c]);
+      const okTypes = vals.every((v) => v === 1 || v === 2);
+      const oneWinner = okTypes && vals[0] + vals[1] === 3;
+      if (!oneWinner)
+        return json({ error: `Exactly one winner must be chosen for: ${c}` }, 400);
+      targets.forEach((t, i) => (clean[t][c] = vals[i]));
     }
 
     const slug = name
